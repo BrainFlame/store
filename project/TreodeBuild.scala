@@ -242,6 +242,7 @@ object TreodeBuild extends Build {
 
         libraryDependencies ++= Seq (
           "com.jayway.restassured" % "rest-assured" % "2.4.0" % "test",
+          "commons-io" % "commons-io" % "1.3.2",
           "com.twitter" %% "twitter-server" % "1.9.0"))
 
   // A standalone server for system tests.  Separated to keep system testing components out of

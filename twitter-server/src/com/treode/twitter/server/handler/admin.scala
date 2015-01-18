@@ -25,6 +25,9 @@ import com.treode.twitter.util._
 import com.twitter.finagle.Service
 import com.twitter.finagle.http.{Method, Request, Response, Status}
 import com.twitter.util.Future
+import org.apache.commons.io.IOUtils
+import org.jboss.netty.buffer.ChannelBuffers
+
 
 class AtlasHandler (controller: Controller) extends Service [Request, Response] {
 
@@ -95,6 +98,42 @@ class TablesHandler (controller: Controller) extends Service [Request, Response]
         controller.tables
           .map (tables => respond.json (req, tables))
           .toTwitterFuture
+
+      case _ =>
+        Future.value (respond (req, Status.MethodNotAllowed))
+    }}}
+
+class AdminUIHandler extends Service [Request, Response] {
+  
+  private def test ( getBytes: () => Array[Byte]) = {
+    
+  }
+  
+  def apply (req: Request): Future [Response] = {
+    req.method match {
+
+      case Method.Get => {
+        println ("AdminUIHandler - Get")
+        val res = respond (req, Status.Ok)
+        //val resourceURL = getClass.getResource("/META-INF/resources/webjars/bootstrap/3.1.1/css/bootstrap.min.css")
+        val resourceURL = getClass.getResource("/META-INF/resources/ui/index.html")
+        if ( resourceURL != null ) {
+          val conn = resourceURL.openConnection
+          val stream = conn.getInputStream
+          val bytes = () => { IOUtils.toByteArray(stream) }
+          if (stream != null) {
+            res.status = Status.Ok
+            res.contentType = "text/html"
+            res.setContent(ChannelBuffers.copiedBuffer(bytes()))
+            Future.value (res)
+          } else {
+            println ("stream null")
+          }
+        } else {
+          println ("getResource null")
+        }
+        Future.value (respond (req, Status.Ok))
+      }
 
       case _ =>
         Future.value (respond (req, Status.MethodNotAllowed))
