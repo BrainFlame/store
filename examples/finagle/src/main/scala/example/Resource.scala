@@ -54,7 +54,12 @@ class Resource (host: HostId, store: Store) extends Service [Request, Response] 
     val iter = store
         .scan (table, Bound.firstKey, window, slice)
         .filter (_.value.isDefined)
-    supply (respond.json (req, iter))
+
+    val rsp = respond.json(req,iter)
+    rsp.headerMap.add ("Access-Control-Allow-Origin","*")
+    println(rsp)
+    supply (rsp)
+    //supply (respond.json (req, iter))
   }
 
   def history (req: Request, table: TableId): Async [Response] = {
@@ -101,6 +106,7 @@ class Resource (host: HostId, store: Store) extends Service [Request, Response] 
     }}
 
   def apply (req: Request): Future [Response] = {
+    println(req)
     Path (req.path) :? req.params match {
 
       case Root / "table" / tab :? KeyParam (key) =>

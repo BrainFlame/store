@@ -17,8 +17,7 @@ libraryDependencies ++= Seq (
   "com.treode" %% "store" % "0.3.0-SNAPSHOT" % "compile;test->stub",
   "com.treode" %% "twitter-server" % "0.3.0-SNAPSHOT",
   "com.twitter" %% "finagle-http" % "6.24.0",
-  "org.scalatest" %% "scalatest" % "2.2.2" % "test",
-  "org.webjars" % "bootstrap" % "3.1.1-2" )
+  "org.scalatest" %% "scalatest" % "2.2.2" % "test" )
 
 resolvers += "Twitter" at "http://maven.twttr.com"
 

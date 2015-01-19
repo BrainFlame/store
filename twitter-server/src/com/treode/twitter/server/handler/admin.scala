@@ -22,11 +22,13 @@ import com.treode.disk.DriveAttachment
 import com.treode.store.{Cohort, Store}, Store.Controller
 import com.treode.twitter.finagle.http.{RichRequest, mapper}
 import com.treode.twitter.util._
-import com.twitter.finagle.Service
+import com.twitter.finagle.{Http, Service}
 import com.twitter.finagle.http.{Method, Request, Response, Status}
-import com.twitter.util.Future
+import com.twitter.util.{Await,Future}
 import org.apache.commons.io.IOUtils
 import org.jboss.netty.buffer.ChannelBuffers
+//import org.jboss.netty.handler.codec.http._
+
 
 
 class AtlasHandler (controller: Controller) extends Service [Request, Response] {
@@ -105,17 +107,12 @@ class TablesHandler (controller: Controller) extends Service [Request, Response]
 
 class AdminUIHandler extends Service [Request, Response] {
   
-  private def test ( getBytes: () => Array[Byte]) = {
-    
-  }
-  
   def apply (req: Request): Future [Response] = {
     req.method match {
 
       case Method.Get => {
-        println ("AdminUIHandler - Get")
+        println (req)
         val res = respond (req, Status.Ok)
-        //val resourceURL = getClass.getResource("/META-INF/resources/webjars/bootstrap/3.1.1/css/bootstrap.min.css")
         val resourceURL = getClass.getResource("/META-INF/resources/ui/index.html")
         if ( resourceURL != null ) {
           val conn = resourceURL.openConnection
@@ -138,3 +135,18 @@ class AdminUIHandler extends Service [Request, Response] {
       case _ =>
         Future.value (respond (req, Status.MethodNotAllowed))
     }}}
+
+
+
+  /*
+  val proxyOrigin: Service [ HttpRequest, HttpResponse ] =
+      Http.newService("localhost:7070")
+    val request = new DefaultHttpRequest ( HttpVersion.HTTP_1_1, HttpMethod.GET, "/table/0x100")
+    val response: Future[HttpResponse] = proxyOrigin(request)
+    response onSuccess { resp: HttpResponse =>
+        println ("GET success: " + resp)
+    }
+    Await.ready(response)
+    * /
+    */
+//} 

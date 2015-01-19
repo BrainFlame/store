@@ -27,6 +27,7 @@ package object handler {
     def apply (req: Request, status: HttpResponseStatus = Status.Ok): Response = {
       val rsp = req.response
       rsp.status = status
+      rsp.headerMap.add ("Access-Control-Allow-Origin","*")
       rsp
     }
 
@@ -34,5 +35,6 @@ package object handler {
       val rsp = req.response
       rsp.status = Status.Ok
       rsp.json = value
+      rsp.headerMap.add ("Access-Control-Allow-Origin","*")
       rsp
     }}}
